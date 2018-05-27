@@ -1,0 +1,22 @@
+生成复合块 
+MaxDepth:3
+DATA[1]:0.936270
+
+DATA[2]:0.917983
+
+不生成复合块
+
+MaxDepth: 3 MAXHEAP 8
+DATA[1]:0.941573  dep:5 
+        0.940390  dep:3
+        0.948871  dep:3 MAXHEAP 16 0.960568 
+                 (acc先处理大的Rs)0.941282
+        0.930800  dep:1  
+        0.946407  dep:1 MAXHEAP 16
+        
+DATA[2]:0.928141  dep:5
+        0.926484  dep:3
+        0.939045  dep:3 MAXHEAP 16 0.931376 
+                  (acc)0.936030
+        0.921548  dep:1 
+        0.936604  dep:1 MAXHEAP 16
