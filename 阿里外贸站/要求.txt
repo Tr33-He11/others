@@ -1,0 +1,78 @@
+阿里外贸站 外贸直通车 智能调价工具
+
+登录 sh.vip.alibaba.com，用户名：密码为 cn200021818: pass
+点左侧“外贸直通车”。新页面上部点击按钮“进入外贸直通车”。
+点左侧“推广管理”。右边框架下部是关键词列表。关注“出价”和“预估排名”两列。
+点击关键词对应的价格，将弹出“修改价格”对话框，用户可以输入价格或在底部选择进前五名所需的最低价。
+
+排名是实时变化的，与竞争对手的出价有关。所以应轮询并实现智能调价。
+
+现有的调价工具都是付费的。在直通车首页左侧有“第三方服务工具”，进去后会发现有“P4P一阳指”、“P4P机器人”、“P4P助手”等。还有http://www.aliezs.com/上的e助手（国际版）。
+这些都提供试用。
+
+用鼠标和键盘模拟实现很容易，但有局限性。应用更好的实现方案。
+
+出价规则要可定制。暂时按如下规则
+- 第5名高于20元时输入底价（每个关键词都有一个官方设定的底价）。
+- 第5名低于20元时抢第5名，然后依如下规则
+  if 上升4名需要多付的金额低于10元或50%时上升4位；
+  elseif 上升3名需要多付的金额低于5元或30%时上升3位；
+  elseif 若上升2名需要多付的金额低于3元或20%时上升2位；
+  else 若上升1名需要多付的金额低于1元或10%时上升1位。
+  结束本轮对当前关键词的调价。
+- 轮询时间暂定为15分钟。
+
+获取top5价格
+http://www2.alibaba.com/asyGetTopFivePrice.do?ctoken=11gylfnjnd9u7&dmtrack_pageid=3b4d2b650bfa9c985968732815d40027a501611df3
+json=%7B%22id%22%3A76803038189%7D&_dt_p4p_id_=0bfb91e915000301439466742e&_csrf_token_=wk2gt52rhcmn&_dt_page_id_=3b4d2b650be38ae85968a4bf15d40c430371e76f07
+json=%7B%22id%22%3A%2276803038189%22%7D&_dt_p4p_id_=0bfb91e915000301439466742e&_csrf_token_=wk2gt52rhcmn
+
+
+{"errorMsg":"","returnData":{
+  "id":[50803949680,50803949681,50857224892,77001892337,77258600234],
+  "rank":[5,1,2,2,4]},"sparkOffData":{"50803949680":false,"50803949681":false,"50857224892":false,"77001892337":false,"77258600234":false},"status":true}
+{"balance":"86.16","data":["8.6","3.0"],"errorMsg":"","isBw":true,"status":true}
+chrome driver:http://chromedriver.storage.googleapis.com/index.html?path=2.7/
+http://www.cnblogs.com/bugua/p/3540380.html
+http://saucelabs.com/resources/articles/selenium-tips-css-selectors
+\\\
+
+
+
+cookie:
+
+
+
+
+{"costLimit":"150.00","currentPage":1,"data":[
+   {"adKeywordDO":{
+        "custId":50143628,"gmtCreate":{"date":2,"day":4,"hours":4,"minutes":29,"month":1,"seconds":21,"time":1486038561000,"timezoneOffset":480,"year":117},
+        "gmtModified":{"date":24,"day":6,"hours":20,"minutes":31,"month":5,"seconds":33,"time":1498361493000,"timezoneOffset":420,"year":117},
+        "id":76803037478,"normWord":"ARTIFICI GRASS TILE","price":300,"status":"stopped","word":"artificial grass tile","wordType":"recomm_word"},
+        "avgClick":"0.00%",
+        "avgCost":"0.00",
+        "avgPrice":"9.8",
+        "basePrice":"3.0",
+        "click":0,
+        "compete":100,
+        "exposure":0,
+        "gmtCreate":"2017-02-02 03:29:21",
+        "id":76803037478,
+        "isExeMatching":false,
+        "isPreferential":false,
+        "isVertical":false,
+        "keyword":"artificial grass tile",
+        "matchCount":1,
+        "matchLevel":"-1",
+        "myPrice":"3.0",
+        "plusPrice":0.1,
+        "price":"3.0",
+        "proTime":"&lt;1",
+        "qsStar":1,
+        "relatedItem":[],
+        "search":100,
+        "sparkOff":false,
+        "spend":"0.00",
+        "state":"0",
+        "tag":["核心效果词","直通车App"]}
+        ]}

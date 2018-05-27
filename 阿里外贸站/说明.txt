@@ -1,0 +1,16 @@
+原理：
+  (1)用selenium调用浏览器手动登录账户(不需要验证码则可以自动登录）
+  (2)登录成功后，读取cookie，获得当前session。
+  (3)其他操作（读取所有keyword，获取rank，更新价格）都是通过分析网页上的ajax实现的。
+
+运行环境
+     python 3.6.1
+     需要的库
+     requests和selenium(搭配chrome浏览器)
+     requests 安装: pip3 install requests
+     selenium+chrome安装:
+       (1)pip3 install selenium
+       (2)下载chrome driver和ali.py放在一起就行了
+          windows版本的chrome driver已经在压缩包里。
+          下载地址：http://chromedriver.storage.googleapis.com/index.html?path=2.7/
+          
