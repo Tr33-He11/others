@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset='utf-8' />
+<link href='fullcalendar.min.css' rel='stylesheet' />
+<link href='fullcalendar.print.min.css' rel='stylesheet' media='print' />
+<script src='moment.min.js'></script>
+<script src='http://code.jquery.com/jquery-1.8.0.min.js'></script>
+<script src='fullcalendar.min.js'></script>
+<!-- jquery ui -->
+  <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css"> 
+  <script src="http://code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
+  <link rel="stylesheet" href="http://jqueryui.com/resources/demos/style.css">
+<script>
+/* My Parameter */
+  var DialogWidth=window.screen.width/2;
+  var DialogHeigh=0.8*DialogWidth;
+/* My Function*/
+  function IsPC() {
+    var userAgentInfo = navigator.userAgent;
+    var Agents = ["Android", "iPhone",
+                "SymbianOS", "Windows Phone",
+                "iPad", "iPod"];
+    var flag = true;
+    for (var v = 0; v < Agents.length; v++) {
+        if (userAgentInfo.indexOf(Agents[v]) > 0) {
+            flag = false;
+            break;
+        }
+    }
+    return flag;
+  }    
+  function getTime(){
+      var date = new Date();
+      var seperator1 = "-";
+      var month = date.getMonth() + 1;
+      var strDate = date.getDate();
+      if (month >= 1 && month <= 9) {
+          month = "0" + month;
+      }
+      if (strDate >= 0 && strDate <= 9) {
+          strDate = "0" + strDate;
+      }
+    var currentdate = date.getFullYear() + seperator1 + month + seperator1 + strDate;
+    return currentdate;
+	}
+  function setMobileSettings(){ 
+    var body=$("body");
+	body.css("font-size","35px");
+	DialogWidth= document.body.clientWidth*0.9;
+	DialogHeigh=DialogWidth*1.2;
+  }
+  function addEvent(title,time){
+    var url="http://turnback.top/sch/getEvents.php?action=addEvent&title="+title+"&start="+time;
+	//alert(url);
+	 $.get(url,{},function(data){
+		 location.reload();
+	 });
+  }
+  function deleteEvent(title,time){
+    var url="http://turnback.top/sch/getEvents.php?action=removeEvent&title="+title+"&start="+time; 
+	document.write(time.toISOString());
+	document.write(url);
+  }
+</script>
+<script> 
+	$(document).ready(function(){ 	
+		$('#calendar').fullCalendar({
+			header: {
+				left: 'prev,next today',
+				center: 'title',
+				right: 'listWeek,listMonth agendaWeek,agendaDay,month'         //视图
+			},
+
+			// customize the button names,
+			// otherwise they'd all just say "list"
+			views: {
+				listDay: { buttonText: 'list-day' }, 
+				listWeek: { buttonText: 'list-week' },
+				listMonth:{ buttonText: 'list-Month'}
+			}, 
+			defaultView: 'listWeek',
+			defaultDate: getTime(),
+			navLinks: true, // can click day/week names to navigate views
+			editable: true,	
+			monthNames:['一月', '二月', '三月', 'April', 'May', 'June', 'July','August', 'September', 'October', 'November', 'December'],
+			eventLimit: true, // allow "more" link when too many events
+			dayClick: function (date, allDay, jsEvent, view) {//日期点击后弹出的jq ui的框，添加日程记录 
+			   //alert(DialogHeigh+'*'+DialogWidth);
+			   //alert(date.toISOString());
+			  $("#addTime").text(date.toISOString());
+			  $( "#addDialog" ).dialog({
+	           autoOpen:true,
+	           height:DialogHeigh,
+        	   width:DialogWidth,
+        	   position:"center",
+	           title:" 添加事件",
+        	   draggable:true,
+	           buttons:{
+	              "添加事件":function(){
+				     
+				     addEvent($(this).find("#addTitle").val(),$(this).find("#addTime").text());
+	        	     $(this).dialog("close");
+	        	  },
+	        	  "关闭":function(){ 
+	        	     $(this).dialog("close");
+		          }
+	           }
+	          });
+			
+            },
+			eventClick: function(event, jsEvent,view) { 
+			  alert(view.start);
+			  $("#modifyTitle").text(event.title);
+			  $("#modifyTime").text(event.start);
+			  $("#modifyDialog" ).dialog({
+	           autoOpen:true,
+	           height:DialogHeigh,
+        	   width:DialogWidth,
+        	   position:"center",
+	           title:" 编辑事件",
+        	   draggable:true,
+	           buttons:{
+	              "更新":function(){ 
+	        	     $(this).dialog("close");
+	        	  },
+				  "删除":function(){
+				     deleteEvent($("#modifyDialog").val(),$("#modifyTime").text());
+					 $(this).dialog("close");
+				  },
+	        	  "关闭":function(){ 
+	        	     $(this).dialog("close");
+		          }
+	           }
+	          });       
+			  $('#calendar').fullCalendar('updateEvent', event);	 
+            },
+			eventMouseover:function(calEvent,jsEvent,view){ 
+                           $(this).css('border-color', 'red green blue');
+			},
+			eventMouseout:function(calEvent,jsEvent,view){ 
+                           $(this).css('border-color', 'transparent');
+			},
+        	eventSources: [                                     //定义多个event来源
+                        'getEvents.php?action=getAllEvents' 
+                         ]
+		});
+		
+             if (!IsPC()) setMobileSettings(); 
+	});
+</script>
+<style>
+
+	body {
+		margin: 40px 10px;
+		padding: 0;
+		font-family: 微软雅黑;
+		font-size: 15px; 
+	}
+
+	#calendar {
+		max-width: 900px;
+		margin: 0 auto;
+	}
+
+</style>
+</head>
+<body>
+
+<div id='calendar'></div>
+<div id="addDialog" title="基本的对话框" style="display:none"> 
+时间：<label id="addTime"></label><br>
+标题：<br><textarea id="addTitle" cols=25 rows=5>
