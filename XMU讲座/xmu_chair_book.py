@@ -1,9 +1,9 @@
-# by cjf @xmu 
 import requests
 import sys
 from bs4 import BeautifulSoup 
 import urllib.parse
 sess=requests.Session()
+debug=False
 hdrs={ 
     "Cache-Control": "max-age=0",
     "Origin": "http://ischoolgu.xmu.edu.cn",
@@ -127,10 +127,11 @@ def sendEmail(to,title,content):
   }
   param=urlencode_utf8(param)
   url="http://xmucs.top:8080/apis/sendmail.php?"+param
+  log(url)
   resp=requests.get(url)
   log("[*]发送邮件%s" %(resp.text))
   
-def get():
+def get(email_addr):
   global sess
   url="http://ischoolgu.xmu.edu.cn/admin_bookChair.aspx"
   resp=sess.get(url)
@@ -153,11 +154,12 @@ def get():
               log("    [*]准备抢讲座 [%s]" %(title))
               param=getParam_for_book(resp.text,submit_name)
               sess.post(url,data=param,headers=hdrs,timeout=5)
-              sendEmail("352871242@qq.com","讲座预约成功","时间:【%s】 地址【%s】讲师【%s】 标题【%s】" %(time,addr,teacher,title))
+              sendEmail(email_addr,"讲座预约成功","时间:【%s】 地址【%s】讲师【%s】 标题【%s】" %(time,addr,teacher,title))
               log("[*]成功抢到讲座[%s],邮件已发送" %(title))
       
 def log(data):
-  print(data)
+  if debug:
+     print(data)
   return
   f=open("xmu_chair_book.log","a")
   f.write(data+"\n")
@@ -179,15 +181,25 @@ def qry():
     cTitl=tds[2].get_text().strip()
     cPeri=tds[3].get_text().strip()
     print(" %s %-20s %-80s %s" %(cTime,cTech,cTitl,cPeri))
-print("[*]程序开始运行:")
-time_local = time.localtime(time.time())
-dt = time.strftime("%Y-%m-%d %H:%M:%S",time_local)
-print(dt)
-while True:
-  try:
-    login("23020161153315","password")
-    #qry()
-    get()
-  except Exception as e:
-    log("except")
-  time.sleep(3)
+
+    
+if __name__=="__main__":
+    if len(sys.argv)>1 and sys.argv[1][0]=='d':
+       print("Debug")
+       debug=True
+    #配置
+    sid="23020161153315"
+    pwd="159357"
+    email_addr="352871242@qq.com"
+    #
+    print("[*]程序开始运行:")
+    time_local = time.localtime(time.time())
+    dt = time.strftime("%Y-%m-%d %H:%M:%S",time_local)
+    print(dt)
+    while True:
+      try:
+        login(sid,pwd) 
+        get(email_addr)
+      except Exception as e:
+        log("except")
+      time.sleep(3)
